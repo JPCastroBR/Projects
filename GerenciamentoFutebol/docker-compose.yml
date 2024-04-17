@@ -1,0 +1,26 @@
+version: '3'
+services:
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./GerenciamentoFutebol:/usr/local/apache2/htdocs
+    depends_on:
+      - mariadb
+
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: competicao # Defina sua senha root do MariaDB aqui
+      MYSQL_DATABASE: competicao # Defina o nome do banco de dados
+      MYSQL_USER: competicao # Defina seu usuário do MariaDB
+      MYSQL_PASSWORD: competicao # Defina sua senha de usuário do MariaDB
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+volumes:
+  mariadb_data:

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Posições</title>
+</head>
+<body>
+    <h1>Cadastro de Posições</h1>
+    <form id="cadastroPosicaoForm">
+        <label for="posicao">Posição:</label><br>
+        <input type="text" id="posicao" name="posicao" required><br><br>
+
+        <button type="submit">Salvar Posição</button>
+        <button type="button" id="exportarPosicoes">Exportar JSON</button>
+    </form>
+
+    <h2>Posições Cadastradas</h2>
+    <ul id="listaPosicoes"></ul>
+
+    <script>
+        // Função para carregar e exibir as posições cadastradas
+        function carregarPosicoes() {
+            const listaPosicoes = document.getElementById("listaPosicoes");
+            listaPosicoes.innerHTML = ""; // Limpa a lista antes de carregar novamente
+
+            // Carregar as posições existentes do localStorage
+            let posicoes = [];
+            try {
+                posicoes = JSON.parse(localStorage.getItem("posicoes")) || [];
+            } catch (error) {
+                console.error("Erro ao carregar posições:", error);
+            }
+
+            // Para cada posição, criar um item de lista com um botão de exclusão
+            posicoes.forEach(posicao => {
+                const li = document.createElement("li");
+                li.textContent = posicao;
+                const btnExcluir = document.createElement("button");
+                btnExcluir.textContent = "Excluir";
+                btnExcluir.addEventListener("click", function() {
+                    // Remover a posição da lista
+                    posicoes = posicoes.filter(p => p !== posicao);
+                    // Salvar a lista atualizada no localStorage
+                    localStorage.setItem("posicoes", JSON.stringify(posicoes));
+                    // Recarregar a lista de posições
+                    carregarPosicoes();
+                });
+                li.appendChild(btnExcluir);
+                listaPosicoes.appendChild(li);
+            });
+        }
+
+        // Carregar e exibir as posições ao carregar a página
+        carregarPosicoes();
+
+        document.getElementById("cadastroPosicaoForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita o envio do formulário padrão
+
+            // Obtém o valor do campo de posição
+            const posicao = document.getElementById("posicao").value;
+
+            // Carregar as posições existentes do arquivo JSON
+            let posicoes = [];
+            try {
+                posicoes = JSON.parse(localStorage.getItem("posicoes")) || [];
+            } catch (error) {
+                console.error("Erro ao carregar posições:", error);
+            }
+
+            // Adicionar a nova posição à lista
+            posicoes.push(posicao);
+
+            // Salvar a lista atualizada no localStorage
+            localStorage.setItem("posicoes", JSON.stringify(posicoes));
+
+            alert("Posição salva com sucesso!");
+
+            // Limpar campo de posição
+            document.getElementById("posicao").value = "";
+
+            // Recarregar a lista de posições
+            carregarPosicoes();
+        });
+
+        // Evento para exportar as posições em um arquivo JSON
+        document.getElementById("exportarPosicoes").addEventListener("click", function() {
+            // Carregar as posições existentes do localStorage
+            const posicoes = localStorage.getItem("posicoes");
+
+            // Verificar se existem posições para exportar
+            if (!posicoes) {
+                alert("Não há posições cadastradas para exportar.");
+                return;
+            }
+
+            // Criar um blob com os dados JSON
+            const blob = new Blob([posicoes], { type: 'application/json' });
+
+            // Criar um objeto URL a partir do blob
+            const url = window.URL.createObjectURL(blob);
+
+            // Criar um link de download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'positions.json';
+            document.body.appendChild(a);
+            
+            // Simular um clique no link de download
+            a.click();
+
+            // Limpar o objeto URL após o download
+            window.URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página do Jogador</title>
+</head>
+<body>
+    <h1>Página do Jogador</h1>
+    <div id="informacoesJogador"></div>
+
+    <script>
+        // Obter o nome do jogador da URL
+        const params = new URLSearchParams(window.location.search);
+        const nomeJogador = params.get("nome");
+
+        // Carregar o arquivo JSON do jogador
+        fetch(`${nomeJogador}.json`)
+            .then(response => response.json())
+            .then(jogador => {
+                const informacoesJogadorDiv = document.getElementById("informacoesJogador");
+                informacoesJogadorDiv.innerHTML = `
+                    <p>Nome: ${jogador.nome}</p>
+                    <p>Idade: ${jogador.idade}</p>
+                    <p>Equipe: ${jogador.equipe}</p>
+                    <p>Posições: ${jogador.posicoes.join(", ")}</p>
+                `;
+            })
+            .catch(error => {
+                console.error("Erro ao carregar informações do jogador:", error);
+                const informacoesJogadorDiv = document.getElementById("informacoesJogador");
+                informacoesJogadorDiv.innerHTML = "<p>Erro ao carregar informações do jogador.</p>";
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Jogadores</title>
+</head>
+<body>
+    <h1>Cadastro de Jogadores</h1>
+    <form id="cadastroJogadorForm">
+        <label for="nome">Nome:</label><br>
+        <input type="text" id="nome" name="nome" required><br><br>
+        
+        <label for="idade">Idade:</label><br>
+        <input type="number" id="idade" name="idade" required><br><br>
+        
+        <label for="equipe">Equipe:</label><br>
+        <input type="text" id="equipe" name="equipe"><br><br>
+        
+        <label for="posicao">Posição:</label><br>
+        <select id="posicao" name="posicao">
+            <!-- Opções de posição serão preenchidas dinamicamente -->
+        </select><br><br>
+        
+        <button type="submit">Salvar Jogador</button>
+    </form>
+
+    <script>
+        // Função para preencher as opções de posição
+        function preencherOpcoesPosicao(posicoes) {
+            const selectPosicao = document.getElementById("posicao");
+            posicoes.forEach(posicao => {
+                const option = document.createElement("option");
+                option.textContent = posicao;
+                selectPosicao.appendChild(option);
+            });
+        }
+
+        // Carregar as posições do arquivo JSON
+        fetch('positions/positions.json')
+            .then(response => response.json())
+            .then(posicoes => {
+                preencherOpcoesPosicao(posicoes);
+            })
+            .catch(error => {
+                console.error('Erro ao carregar posições:', error);
+            });
+
+        document.getElementById("cadastroJogadorForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evita o envio do formulário padrão
+
+            // Obtém os valores dos campos do formulário
+            const nome = document.getElementById("nome").value;
+            const idade = document.getElementById("idade").value;
+            const equipe = document.getElementById("equipe").value;
+            const posicao = document.getElementById("posicao").value;
+
+            // Criar objeto de jogador com as informações
+            const jogador = {
+                nome,
+                idade,
+                equipe,
+                posicao
+            };
+
+            // Converter o objeto para JSON
+            const jogadorJSON = JSON.stringify(jogador);
+
+            // Exibir o JSON do jogador no console (pode ser removido na versão final)
+            console.log(jogadorJSON);
+
+            alert("Jogador cadastrado com sucesso!");
+
+            // Limpar campos do formulário
+            document.getElementById("nome").value = "";
+            document.getElementById("idade").value = "";
+            document.getElementById("equipe").value = "";
+        });
+    </script>
+</body>
+</html>
