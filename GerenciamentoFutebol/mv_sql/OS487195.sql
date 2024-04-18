@@ -14,7 +14,7 @@ SELECT
     SE.CD_SERVICO,
     SE.DS_SERVICO,
     TP.DS_TIP_PRESC
-from
+FROM
     PRE_MED PM 
     INNER JOIN ITPRE_MED IPM        ON PM.CD_PRE_MED=IPM.CD_PRE_MED AND IPM.CD_TIP_ESQ = 'DEV'
     INNER JOIN TIP_PRESC TP         ON IPM.CD_TIP_PRESC=TP.CD_TIP_PRESC 
@@ -25,13 +25,13 @@ from
 WHERE 
     PM.DT_PRE_MED BETWEEN '01/01/2024' AND '30/01/2024'
     AND PM.CD_PRE_MED IN ( --SELECIONA AS PRIMEIRAS PRESCRICOES COM DEV DE CADA ATENDIMENTO
-                            select
-                                min(pm1.CD_PRE_MED)
-                            from 
-                                dbamv.itpre_med ipm1
-                                inner join pre_med pm1 on pm1.cd_pre_med=ipm1.CD_PRE_MED
-                            where
-                                ipm1.CD_TIP_ESQ = 'DEV'
-                            group by pm1.cd_atendimento
+                            SELECT
+                                MIN(PM1.CD_PRE_MED)
+                            FROM 
+                                DBAMV.ITPRE_MED IPM1
+                                INNER JOIN PRE_MED PM1 ON PM1.CD_PRE_MED=IPM1.CD_PRE_MED
+                            WHERE
+                                IPM1.CD_TIP_ESQ = 'DEV'
+                            GROUP BY PM1.CD_ATENDIMENTO
                         )
 ;
